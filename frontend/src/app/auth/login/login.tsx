@@ -8,11 +8,42 @@ import {
   IconBrandGoogle,
 } from "@tabler/icons-react";
 import { ShootingStarsAndStarsBackgroundDemo } from "@/components/landingpagebackground";
+import { useRouter } from "next/navigation";
 
 export function Login() {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const router = useRouter();
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Form submitted");
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get('email')?.toString().trim();
+    const password = formData.get("password")?.toString().trim();
+
+    if(!email || !password) {
+      alert("All fields are required!");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${apiBaseUrl}/user/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({email,password}),
+      });
+      if(!response.ok) {
+        const errorData = await response.json();
+        console.error("Loginfailed:", errorData);
+        alert(errorData.message || "Login failed!");
+        return;
+      }
+      const data = await response.json();
+      console.log("User registered successfully:", data);
+      router.push("/user");
+    } catch(error) {
+      console.error("Error registering user:", error);
+    }
   };
   return (
     <div>
@@ -28,11 +59,11 @@ export function Login() {
         <form className="my-8" onSubmit={handleSubmit}>
           <LabelInputContainer className="mb-4">
             <Label htmlFor="email">Email Address</Label>
-            <Input id="email" placeholder="Bhuvan9646@gmail.com" type="email" />
+            <Input id="email" name="email" placeholder="Bhuvan9646@gmail.com" type="email" />
           </LabelInputContainer>
           <LabelInputContainer className="mb-4">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" placeholder="••••••••" type="password" />
+            <Input id="password" name="password" placeholder="••••••••" type="password" />
           </LabelInputContainer>
 
           <button

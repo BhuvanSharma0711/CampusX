@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import React from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -8,11 +8,57 @@ import {
   IconBrandGoogle,
 } from "@tabler/icons-react";
 import { ShootingStarsAndStarsBackgroundDemo } from "@/components/landingpagebackground";
+import { useRouter } from "next/navigation";
 
 export function Register() {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const router = useRouter();
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Form submitted");
+  
+    const formData = new FormData(e.currentTarget);
+    const firstName = formData.get("firstname")?.toString().trim();
+    const lastName = formData.get("lastname")?.toString().trim();
+    const email = formData.get("email")?.toString().trim();
+    const password = formData.get("password")?.toString().trim();
+  
+    // Validate required fields
+    if (!firstName || !lastName || !email || !password) {
+      alert("All fields are required!");
+      return;
+    }
+  
+    const fullName = `${firstName} ${lastName}`;
+  
+    const userData = {
+      name: fullName, // Combined first and last name
+      email,
+      password,
+    };
+  
+    try {
+      const response = await fetch(`${apiBaseUrl}/user/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Registration failed:", errorData);
+        alert(errorData.message || "Registration failed!");
+        return;
+      }
+  
+      const data = await response.json();
+      console.log("User registered successfully:", data);
+  
+      router.push("/auth/verify");
+    } catch (error) {
+      console.error("Error registering user:", error);
+    }
   };
   return (
     <div>
@@ -29,20 +75,20 @@ export function Register() {
           <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
             <LabelInputContainer>
               <Label htmlFor="firstname">First name</Label>
-              <Input id="firstname" placeholder="Bhuvan" type="text" />
+              <Input id="firstname" name="firstname" placeholder="Bhuvan" type="text" />
             </LabelInputContainer>
             <LabelInputContainer>
               <Label htmlFor="lastname">Last name</Label>
-              <Input id="lastname" placeholder="Sharma" type="text" />
+              <Input id="lastname" name="lastname" placeholder="Sharma" type="text" />
             </LabelInputContainer>
           </div>
           <LabelInputContainer className="mb-4">
             <Label htmlFor="email">Email Address</Label>
-            <Input id="email" placeholder="Bhuvan9646@gmail.com" type="email" />
+            <Input id="email" name="email" placeholder="Bhuvan9646@gmail.com" type="email" />
           </LabelInputContainer>
           <LabelInputContainer className="mb-4">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" placeholder="••••••••" type="password" />
+            <Input id="password" name="password" placeholder="••••••••" type="password" />
           </LabelInputContainer>
 
           <button
