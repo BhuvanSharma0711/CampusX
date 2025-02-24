@@ -14,7 +14,7 @@ export const AcmeLogo = () => {
   );
 };
 
-export default function App() {
+export default function Navigationbar() {
   return (
     <Navbar>
       <NavbarBrand>

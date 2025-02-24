@@ -20,3 +20,20 @@ model User {
   password   String
   isVerified Boolean @default(false)
 }
+
+model Foodshops {
+  id String @id @default(cuid()) @unique
+  name String
+  openby DateTime
+  closedby DateTime
+  delivery Boolean
+  foodavailable Food[]
+}
+
+model Food {
+  id String @id @default(cuid())
+  name String @unique
+  isVegetarian Boolean
+  shopid String
+  foodshops Foodshops @relation(fields: [shopid], references: [id])
+}

@@ -1,4 +1,4 @@
-import Navigationbar from "@/components/Navigationbar";
+import ClientLayout from "@/components/clientLayout";
 import "./globals.css";
 import {Providers} from "./providers";
 
@@ -15,10 +15,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Navigationbar></Navigationbar>
         <main>
           <Providers>
-            {children}
+            <ClientLayout>{children}</ClientLayout>
           </Providers>
         </main>
       </body>
