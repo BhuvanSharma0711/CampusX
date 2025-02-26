@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@heroui/card": "^2.2.13",
     "@heroui/input": "^2.4.13",
     "@heroui/navbar": "^2.2.9",
     "@heroui/react": "^2.6.14",

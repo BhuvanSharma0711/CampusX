@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@firebasegen/default-connector": "file:dataconnect-generated/js/default-connector",
     "@nestjs/cli": "^11.0.2"
   }
 }

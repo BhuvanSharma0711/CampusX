@@ -24,9 +24,11 @@ model User {
 model Foodshops {
   id String @id @default(cuid()) @unique
   name String
-  openby DateTime
-  closedby DateTime
+  openby DateTime? @db.Time()
+  diningby DateTime? @db.Time()
   delivery Boolean
+  deliveryby DateTime? @db.Time()
+  location String?
   foodavailable Food[]
 }
 
