@@ -9,15 +9,18 @@ import {
 } from "@tabler/icons-react";
 import { ShootingStarsAndStarsBackgroundDemo } from "@/components/landingpagebackground";
 import { useRouter } from 'next/navigation';
+import { useUserStore } from "@/store/userStore";
 
 export function Login() {
   const router = useRouter();
+  const { setUser } = useUserStore();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
     const formData = new FormData(e.currentTarget);
     const email = formData.get('email')?.toString().trim();
     const password = formData.get("password")?.toString().trim();
+    
 
     if(!email || !password) {
       alert("All fields are required!");
@@ -39,7 +42,9 @@ export function Login() {
         return;
       }
       const user = await response.json();
-      router.push(`/${user}/dashboard`);
+      const userdata = { username : user.name, email : user.email };
+      setUser(userdata);
+      router.push(`/${user.name}/dashboard`);
     } catch(error) {
       console.error("Error registering user:", error);
     }

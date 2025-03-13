@@ -6,7 +6,6 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import handleErrors from 'src/handlres/handleErrors.global';
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import { JwtService } from '@nestjs/jwt';
 
 const execPromise = promisify(exec);
 
@@ -15,7 +14,6 @@ export class UserService {
   constructor (
     private prisma: PrismaService,
     @Inject('REDIS') private redisClient: Redis,
-    private jwtService: JwtService,
   ) {}
 
   getHello(): string {
@@ -108,9 +106,6 @@ export class UserService {
     if(user?.password!=body.password) {
       throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED);
     }
-    return { 
-        user,
-        token: this.jwtService.sign({ id: user.id }),
-     };
+    return user;
   }
 }
