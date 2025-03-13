@@ -13,18 +13,14 @@ export class FoodshopsService {
 
     async getopendiningshops() {
         const now = new Date();
-        const currentTime = new Date();
-        currentTime.setHours(now.getHours(), now.getMinutes(), now.getSeconds(), 0)
-
-        const openShops = await this.prisma.foodshops.findMany({
-        where: {
-            AND: [
-            { openby: { lte: currentTime } },
-            { diningby: { gt: currentTime } }
-            ],
-        },
-        });
-
+        const istNow = new Date(now.getTime());
+        const currentTime : string = (istNow.toLocaleTimeString("en-IN", { hour12: false }).slice(0, 5));
+        const openShops = await this.prisma.$queryRaw`
+            SELECT * FROM "Foodshops"
+            WHERE (openby <= ${currentTime} AND diningby > ${currentTime}) 
+            OR (diningby<openby AND openby >= ${currentTime} AND diningby >= ${currentTime}) 
+            OR (diningby<openby AND openby <= ${currentTime} AND diningby <= ${currentTime}); 
+        `;
         return openShops;
     }
 }

@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Foodshops" ALTER COLUMN "openby" SET DATA TYPE TEXT,
+ALTER COLUMN "deliveryby" SET DATA TYPE TEXT,
+ALTER COLUMN "diningby" SET DATA TYPE TEXT;

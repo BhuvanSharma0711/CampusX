@@ -8,7 +8,7 @@ import {
   IconBrandGoogle,
 } from "@tabler/icons-react";
 import { ShootingStarsAndStarsBackgroundDemo } from "@/components/landingpagebackground";
-import { useRouter } from "next/navigation";
+import { useRouter } from 'next/navigation';
 
 export function Login() {
   const router = useRouter();
@@ -38,9 +38,8 @@ export function Login() {
         alert(errorData.message || "Login failed!");
         return;
       }
-      const data = await response.json();
-      console.log("User registered successfully:", data);
-      router.push("/user");
+      const user = await response.json();
+      router.push(`/${user}/dashboard`);
     } catch(error) {
       console.error("Error registering user:", error);
     }

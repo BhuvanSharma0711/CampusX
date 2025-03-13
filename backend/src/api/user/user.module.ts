@@ -1,15 +1,20 @@
 import { Module,Scope } from '@nestjs/common';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
+import { JwtModule } from '@nestjs/jwt';
 import Redis from 'ioredis';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-
-console.log('REDIS_URL:', process.env.REDIS_URL);
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Module({
-  imports: [ConfigModule],
+  imports: [ConfigModule,
+    JwtModule.register({
+      secret: "secret-key", // Replace with env variable in production
+      signOptions: { expiresIn: '1h' },
+    }),
+  ],
   controllers: [UserController],
-  providers: [UserService,ConfigService,
+  providers: [UserService,ConfigService,JwtAuthGuard,
     {
       provide: 'REDIS',
       useFactory: () => {
@@ -20,6 +25,6 @@ console.log('REDIS_URL:', process.env.REDIS_URL);
       scope: Scope.DEFAULT,
     }
   ],
-  exports: [UserService, ConfigService],
+  exports: [UserService, ConfigService,JwtAuthGuard],
 })
 export class UserModule {}

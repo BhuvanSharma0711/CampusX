@@ -1,38 +1,25 @@
 import React from 'react'
-import { PropsWithChildren } from 'react';
-import {Card, CardBody, Image, Button, Slider} from "@heroui/react";
+import {Card, CardBody, CardFooter, Image} from "@heroui/react"
 
 function Shopcards(props:any){
   return (
-    <Card
-      className="border-4 bg-background/60 dark:bg-default-100/50 max-w-[610px]"
-      shadow="sm"
-    >
-      <CardBody>
-        <div className="grid grid-cols-6 md:grid-cols-12 gap-6 md:gap-4 items-center justify-center">
-          <div className="relative col-span-6 md:col-span-4">
-            <Image
-              alt="Album cover"
-              className="object-cover"
-              height={150}
-              shadow="md"
-              src="props.img"
-              width="100%"
+    <div className="gap-2 grid grid-cols-2 sm:grid-cols-4">
+      <Card isPressable shadow="sm" fullWidth={false} onPress={() => console.log("item pressed")}>
+        <CardBody className="relative overflow-hidden p-0">
+          <Image
+              alt={props.shopname}
+              className="w-full object-cover h-[140px]"
+              radius="lg"
+              shadow="sm"
+              src={props.img}
             />
-          </div>
-          <div className="flex flex-col col-span-6 md:col-span-8">
-            <div className="flex justify-between items-start">
-              <div className="flex flex-col gap-0">
-                <h3 className="font-semibold text-foreground/90">{props.shopname}</h3>
-                <p className="text-small text-foreground/80">{props.description}</p>
-              </div>
-            </div>
-            <div className="flex w-full items-center justify-center">
-            </div>
-          </div>
-        </div>
-      </CardBody>
-    </Card>
+          </CardBody>
+          <CardFooter className="text-small justify-between">
+            <b>{props.shopname}</b>
+            {/* <p className="text-default-500">{props.description}</p> */}
+          </CardFooter>
+        </Card>
+    </div>
   )
 }
 

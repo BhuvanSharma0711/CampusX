@@ -3,7 +3,7 @@ import Shopcards from "@/components/shopcards";
 import React, { useEffect, useState } from "react";
 
 function Dining() {
-  const [openShops, setOpenShops] = useState<{ name: string }[]>([]);
+  const [openShops, setOpenShops] = useState<{ name: string,image:string }[]>([]);
   const [loading, setLoading] = useState(true);
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -33,7 +33,7 @@ function Dining() {
           ) : openShops.length > 0 ? (
             openShops.map((shop, index) => (
               <div key={index} className="flex-1">
-                <Shopcards shopname={shop.name} />
+                <Shopcards shopname={shop.name} img={shop.image} />
               </div>
             ))
           ) : (
