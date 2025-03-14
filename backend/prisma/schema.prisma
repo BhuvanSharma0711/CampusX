@@ -25,6 +25,7 @@ model Foodshops {
   id String @id @default(cuid()) @unique
   name String
   openby String?
+  dining Boolean
   diningby String?
   delivery Boolean
   deliveryby String?

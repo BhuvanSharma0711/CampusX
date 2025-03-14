@@ -4,10 +4,12 @@ import React from 'react';
 import { usePathname } from "next/navigation";
 import PublicLayout from './layouts/PublicLayout';
 import DashboardLayout from './layouts/DashboardLayout';
+import { useUserStore } from '@/store/userStore';
 
 function ClientLayout({ children,}: {children: React.ReactNode;}) {
     const pathname = usePathname();
-    const Layout = pathname?.startsWith("/user") ? DashboardLayout : PublicLayout;
+    const { user } = useUserStore();
+    const Layout = pathname?.startsWith(`/${user?.username}`) ? DashboardLayout : PublicLayout;
 
     return <Layout>{children}</Layout>
 }

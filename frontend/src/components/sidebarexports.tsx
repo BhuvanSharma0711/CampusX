@@ -10,34 +10,35 @@ import {
 import Link from "next/link";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
+import { useUserStore } from '@/store/userStore';
 
 export function SidebarDemo() {
+  const { user } = useUserStore();
   const links = [
     {
       label: "Dashboard",
-      href: "#",
+      href: `/${user?.username}/dashboard`,
       icon: (
         <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
       label: "Profile",
-      href: "#",
+      href: `/${user?.username}/profile`,
       icon: (
         <IconUserBolt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
       label: "food Gallery",
-      href: "/user/foodgallery",
+      href: `/${user?.username}/foodgallery`,
       icon: (
         <IconSettings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
       label: "Logout",
-      href: "#",
+      href: "/",
       icon: (
         <IconArrowLeft className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
@@ -59,7 +60,7 @@ export function SidebarDemo() {
           <div>
             <SidebarLink
               link={{
-                label: "Manu Arora",
+                label: `${user?.username}`,
                 href: "#",
                 icon: (
                   <Image

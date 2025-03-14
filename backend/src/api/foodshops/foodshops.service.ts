@@ -15,12 +15,43 @@ export class FoodshopsService {
         const now = new Date();
         const istNow = new Date(now.getTime());
         const currentTime : string = (istNow.toLocaleTimeString("en-IN", { hour12: false }).slice(0, 5));
-        const openShops = await this.prisma.$queryRaw`
+        const opendiningShops = await this.prisma.$queryRaw`
             SELECT * FROM "Foodshops"
-            WHERE (openby <= ${currentTime} AND diningby > ${currentTime}) 
-            OR (diningby<openby AND openby >= ${currentTime} AND diningby >= ${currentTime}) 
-            OR (diningby<openby AND openby <= ${currentTime} AND diningby <= ${currentTime}); 
+            WHERE (dining=true AND openby <= ${currentTime} AND diningby > ${currentTime}) 
+            OR (dining=true AND diningby<openby AND openby >= ${currentTime} AND diningby >= ${currentTime}) 
+            OR (dining=true AND diningby<openby AND openby <= ${currentTime} AND diningby <= ${currentTime}); 
         `;
-        return openShops;
+        return opendiningShops;
+    }
+
+    async getdiningshops() {
+        const diningShops = await this.prisma.foodshops.findMany({
+            where:{
+                dining:true,
+            },
+        });
+        return diningShops;
+    }
+
+    async getdeliveryshops() {
+        const deliveryShops = await this.prisma.foodshops.findMany({
+            where:{
+                delivery:true,
+            },
+        });
+        return deliveryShops;
+    }
+
+    async getopendeliveryshops() {
+        const now = new Date();
+        const istNow = new Date(now.getTime());
+        const currentTime : string = (istNow.toLocaleTimeString("en-IN", { hour12: false }).slice(0, 5));
+        const opendeliveryShops = await this.prisma.$queryRaw`
+            SELECT * FROM "Foodshops"
+            WHERE (delivery=true AND openby <= ${currentTime} AND deliveryby > ${currentTime}) 
+            OR (delivery=true AND deliveryby<openby AND openby >= ${currentTime} AND deliveryby >= ${currentTime}) 
+            OR (delivery=true AND deliveryby<openby AND openby <= ${currentTime} AND deliveryby <= ${currentTime}); 
+        `;
+        return opendeliveryShops;
     }
 }

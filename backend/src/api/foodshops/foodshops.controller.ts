@@ -10,8 +10,23 @@ export class FoodshopsController {
     return this.foodshopsService.getFood();
   }
 
+  @Get('getdiningshops')
+  getshops() {
+    return this.foodshopsService.getdiningshops();
+  }
+
+  @Get('getdeliveryshops')
+  getdeliveryshops() {
+    return this.foodshopsService.getdeliveryshops();
+  }
+
   @Get('getopendiningshops')
   getopendiningshops() {
     return this.foodshopsService.getopendiningshops();
+  }
+
+  @Get('getopendeliveryshops')
+  getopendeliveryshops() {
+    return this.foodshopsService.getopendeliveryshops();
   }
 }

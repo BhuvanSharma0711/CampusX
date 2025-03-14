@@ -5,11 +5,10 @@ import React from 'react'
 function Dashboard() {
   const { user } = useUserStore();
   return (
-    <div>
+    <div className="relative w-screen overflow-hidden">
             {user ? (
                 <div>
-                    <h2>Username: {user.username}</h2>
-                    <p>Email: {user.email}</p>
+                    <h1  className="text-3xl font-bold relative ml-36 mt-10">Welcome, {user.username} 😇</h1>
                 </div>
             ) : (
                 <p>No user data available</p>

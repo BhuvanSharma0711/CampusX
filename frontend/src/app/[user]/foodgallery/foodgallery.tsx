@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { CardBody, CardContainer, CardItem } from "@/components/ui/3D-card";
 import Link from 'next/link';
 import {Input} from "@heroui/react";
+import { usePathname } from "next/navigation";
 
 const SearchIcon = (props:any) => {
   return (
@@ -36,6 +37,7 @@ const SearchIcon = (props:any) => {
 };
 
 function Foodgallery() {
+  const pathname = usePathname();
   return (
     <div>
         <div className='relative w-screen h-[50vh] sm:h-[400px] overflow-hidden'>
@@ -82,7 +84,7 @@ function Foodgallery() {
             </div>
         </div>
         <div className='md:flex justify-center gap-6 px-6 mt-0'>
-          <Link href="/user/foodgallery/order-online">
+          <Link href={`${pathname}/order-online`}>
             <CardContainer>
               <CardBody className="bg-gray-50 relative group/card  dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-auto sm:w-[30rem] h-auto rounded-xl p-6 pt-0 border">
                 <CardItem translateZ="100" className="w-full mt-4">
@@ -110,7 +112,7 @@ function Foodgallery() {
               </CardBody>
             </CardContainer>
           </Link>
-          <Link href="/user/foodgallery/dining">
+          <Link href={`${pathname}/dining`}>
             <CardContainer>
               <CardBody className="bg-gray-50 relative group/card  dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-auto sm:w-[30rem] h-auto rounded-xl p-6 pt-0 border">
                 <CardItem translateZ="100" className="w-full mt-4">
