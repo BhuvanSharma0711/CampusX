@@ -6,6 +6,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import handleErrors from 'src/handlres/handleErrors.global';
 import { exec } from 'child_process';
 import { promisify } from 'util';
+import { TaskDto } from './dto/task.dto';
 
 const execPromise = promisify(exec);
 
@@ -72,6 +73,15 @@ export class UserService {
     return user;
   }
 
+  async checkUserExists(body: { email: string }) {
+  const user = await this.prisma.user.findUnique({
+    where: { email: body.email },
+  });
+
+  return { exists: !!user };
+}
+
+
   async verifyEmail(body: { email: string; token: string }, response) {
     const verificationCode = await this.redisClient.get(body.email);
     
@@ -108,4 +118,165 @@ export class UserService {
     }
     return user;
   }
+
+async checkVerificationStatus(email: string) {
+  const user = await this.prisma.user.findUnique({
+    where: { email },
+    select: { isVerified: true },
+  });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  return { verified: user.isVerified };
+}
+
+
+  async fetchdetails({email}) {
+  const user = await this.prisma.user.findUnique({
+    where: {
+      email: email,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  const details = await this.prisma.userDetails.findUnique({
+    where: {
+      userid: user.id,
+    },
+  })
+
+  return details;
+}
+
+async addAcademicDetails(body: {
+  email: string;
+  Rollno: number;
+  Year: number;
+  Course: string;
+  Branch: string;
+  Department: string;
+}) {
+  const user = await this.prisma.user.findUnique({
+    where: { email: body.email },
+  });
+
+  if (!user || !user.isVerified) {
+    throw new Error('User not found or not verified');
+  }
+
+  const userDetails = await this.prisma.userDetails.upsert({
+    where: { userid: user.id },
+    update: {
+      Rollno: body.Rollno,
+      Year: body.Year,
+      Course: body.Course,
+      Branch: body.Branch,
+      Department: body.Department,
+    },
+    create: {
+      userid: user.id,
+      Rollno: body.Rollno,
+      Year: body.Year,
+      Course: body.Course,
+      Branch: body.Branch,
+      Department: body.Department,
+    },
+  });
+
+  return userDetails;
+}
+
+
+async updateGeneralDetails(body: {
+  email: string;
+  Gender: string;
+  isVegetarian: boolean;
+}) {
+  const user = await this.prisma.user.findUnique({
+    where: { email: body.email },
+  });
+
+  if (!user || !user.isVerified) {
+    throw new Error('User not found or not verified');
+  }
+
+  const userDetails = await this.prisma.userDetails.update({
+    where: { userid: user.id },
+    data: {
+      Gender: body.Gender,
+      isVegetarian: body.isVegetarian,
+    },
+  });
+
+  return userDetails;
+}
+
+
+async TaskinHand(body:{email}) {
+  const user = await this.prisma.user.findUnique({
+    where : {
+      email : body.email
+    },
+    select: {
+      id: true,
+    },
+  })
+
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  const tasks = await this.prisma.tasks.findMany({
+    where: {
+      userid: user.id,
+      Finished: false,
+      OR: [
+        { Repeating: true },
+        {
+          Deadline: {
+            gte: new Date()
+          }
+        }
+      ]
+    },
+    orderBy: {
+      Deadline: 'asc',
+    }
+  });
+  
+  return tasks;
+}
+
+async addTask(body: TaskDto) {
+  const user = await this.prisma.user.findUnique({
+    where: { email: body.email },
+    select: { id: true },
+  });
+
+  if (!user) throw new Error('User not found');
+
+  const task = await this.prisma.tasks.create({
+    data: {
+      title: body.title,
+      description: body.description,
+      userid: user.id,
+      Deadline: body.Deadline ? new Date(body.Deadline) : undefined,
+      Finished: body.Finished,
+      Repeating: body.Repeating,
+      RepeatedDays: body.RepeatedDays,
+    },
+  });
+
+  return task;
+}
+
+
 }

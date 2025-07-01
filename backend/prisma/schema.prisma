@@ -19,10 +19,37 @@ model User {
   email      String  @unique
   password   String
   isVerified Boolean @default(false)
+  Details UserDetails?
+  tasks Tasks[]
+}
+
+model Tasks {
+  id String  @id @default(cuid())
+  title String
+  description String
+  userid String
+  Deadline DateTime?
+  Finished Boolean
+  Repeating Boolean
+  RepeatedDays String[]
+  user User @relation(fields: [userid], references: [id])
+}
+
+model UserDetails {
+  id String @id @default(cuid())
+  userid String @unique
+  Rollno Int @unique
+  Year Int
+  Course String
+  Branch String
+  Department String
+  Gender String?
+  isVegetarian Boolean?
+  user User @relation(fields: [userid], references: [id])
 }
 
 model Foodshops {
-  id String @id @default(cuid()) @unique
+  id String @id @default(cuid())
   name String
   openby String?
   dining Boolean
@@ -40,4 +67,33 @@ model Food {
   isVegetarian Boolean
   shopid String
   foodshops Foodshops @relation(fields: [shopid], references: [id])
+}
+
+model Events {
+  id            String      @id @default(cuid())
+  name          String
+  location      String
+  eligibilityId String
+  eligibility   Eligibility @relation(fields: [eligibilityId], references: [id]) 
+  type          String
+  date          DateTime
+  StartTime     DateTime
+  EndTime       DateTime
+  description   String
+  isTeamEvent   Boolean
+  TeamSize      Int?
+  entryfees     Int?
+  prize         String?
+  image         String? @default("https://res.cloudinary.com/dvpjaaqfe/image/upload/v1750364550/noiseporn-JNuKyKXLh8U-unsplash_gya3up.jpg")
+}
+
+model Eligibility {
+  id          String   @id @default(cuid())
+  open        Boolean? @default(true)
+  years       Int[]
+  Course      String[]
+  departments String[]
+  branch      String[]
+  genders     String[]
+  events      Events[]
 }

@@ -5,9 +5,15 @@ import { UserModule } from './api/user/user.module';
 import { PrismaModule } from './prisma/prisma.module';
 import Redis from 'ioredis';
 import { FoodshopsModule } from './api/foodshops/foodshops.module';
+import { EventsModule } from './api/events/events.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [UserModule,PrismaModule,FoodshopsModule],
+  imports: [UserModule,PrismaModule,FoodshopsModule,EventsModule,
+      ConfigModule.forRoot({
+        isGlobal: true,
+      }),
+  ],
   controllers: [AppController],
   providers: [AppService,
     {

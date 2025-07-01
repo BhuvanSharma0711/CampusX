@@ -1,158 +1,104 @@
 "use client";
 import { ExpandableCardDemo } from '@/components/expandablecards';
 import { useUserStore } from '@/store/userStore';
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 function Dashboard() {
   const { user } = useUserStore();
+  const email = user?.email;
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const [events, setEvents] = useState([]);
+  const [tasks, setTasks] = useState([]);
+
+  useEffect(()=>{
+    async function fetchevents(email:string) {
+      try {
+        const response = await fetch(`${apiBaseUrl}/events/relevant` , {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({email}),
+        });
+        const data = await response.json();
+        setEvents(data);
+      }catch (error) {
+         console.error("Error fetching relevant events:", error);
+      }
+    }
+
+    async function fetchtasksinhand(email:string) {
+      try {
+        const response = await fetch(`${apiBaseUrl}/user/tasks-in-hand` , {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({email}),
+        });
+        const data = await response.json();
+        const formateddata = data.map((task: any) => ({
+          ...task,
+          Deadline: task.Deadline
+            ? new Date(task.Deadline).toLocaleDateString('en-IN', { dateStyle: 'medium' })
+            : "Everyday"
+        }));
+        setTasks(formateddata);
+      }catch (error) {
+         console.error("Error fetching in hand tasks:", error);
+      }
+    }
+
+    if (email) {
+      fetchevents(email);
+      fetchtasksinhand(email);
+    }
+    }, [email, apiBaseUrl]);
+
   return (
     <div className="relative w-screen overflow-hidden">
-            {user ? (
-                <div>
-                    <h1  className="text-3xl font-bold relative ml-36 mt-10">Welcome, {user.username} 😇</h1>
-                    <div className='flex flex-row items-center'>
-
-                      <div>
-                        <h1 className="text-3xl font-bold relative ml-36 mt-10">Active events</h1>
-                        <div className='ml-36 mt-10'>
-                          {cards.map((card, index) => (
-                            <ExpandableCardDemo description={card.description} title={card.title} src={card.src} ctaText={card.ctaText} ctaLink={card.ctaLink} content={card.content} key={index}/>
-                          ))}
-                        </div>
-                      </div>
-                     
-                      <div>
-                        <h1 className="text-3xl font-bold relative ml-36 mt-10">Participated events</h1>
-                        <div className='ml-36 mt-10'>
-                          {cards.map((card, index) => (
-                            <ExpandableCardDemo description={card.description} title={card.title} src={card.src} ctaText={card.ctaText} ctaLink={card.ctaLink} content={card.content} key={index}/>
-                          ))}
-                        </div>
-                        
-                      </div>
-
-                    </div>
-                    
-                </div>
-            ) : (
-                <p>No user data available</p>
-            )}
+      {user ? (
+        <div>
+          <h1 className="text-3xl font-bold relative ml-36 mt-10">Welcome, {user.username} 😇</h1>
+          <div className="flex flex-row items-center">
+            <div>
+              <h1 className="text-3xl font-bold relative ml-36 mt-10">Relevant Events</h1>
+              <div className="ml-36 mt-10">
+                {events.map((event: any, index: number) => (
+                  <ExpandableCardDemo
+                    key={index}
+                    title={event.name}
+                    description={event.description}
+                    content={`📍 ${event.location} | 🗓️ ${new Date(event.date).toLocaleDateString()}`}
+                    src={event.image}
+                    ctaText="View Details"
+                    ctaLink={`/events/${event.id}`}
+                  />
+                ))}
+              </div>
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold relative ml-36 mt-10">Your Tasks</h1>
+              <div className="ml-36 mt-10">
+                {tasks.map((task: any, index: number) => (
+                  <ExpandableCardDemo
+                    key={index}
+                    title={task.title}
+                    description={`🗓️${task.Deadline}`}
+                    content={task.description}
+                    src="https://res.cloudinary.com/dvpjaaqfe/image/upload/v1750456650/task_zdadow.avif"
+                    ctaText="View Details"
+                    ctaLink={`/tasks/${task.id}`}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
-  )
+      ) : (
+        <p>No user data available</p>
+      )}
+    </div>
+  );
 }
-
-export default Dashboard
-
-const cards = [
-  {
-    description: "Lana Del Rey",
-    title: "Summertime Sadness",
-    src: "https://assets.aceternity.com/demos/lana-del-rey.jpeg",
-    ctaText: "Play",
-    ctaLink: "https://ui.aceternity.com/templates",
-    content: () => {
-      return (
-        <p>
-          Lana Del Rey, an iconic American singer-songwriter, is celebrated for
-          her melancholic and cinematic music style. Born Elizabeth Woolridge
-          Grant in New York City, she has captivated audiences worldwide with
-          her haunting voice and introspective lyrics. <br /> <br /> Her songs
-          often explore themes of tragic romance, glamour, and melancholia,
-          drawing inspiration from both contemporary and vintage pop culture.
-          With a career that has seen numerous critically acclaimed albums, Lana
-          Del Rey has established herself as a unique and influential figure in
-          the music industry, earning a dedicated fan base and numerous
-          accolades.
-        </p>
-      );
-    },
-  },
-  {
-    description: "Babbu Maan",
-    title: "Mitran Di Chhatri",
-    src: "https://assets.aceternity.com/demos/babbu-maan.jpeg",
-    ctaText: "Play",
-    ctaLink: "https://ui.aceternity.com/templates",
-    content: () => {
-      return (
-        <p>
-          Babu Maan, a legendary Punjabi singer, is renowned for his soulful
-          voice and profound lyrics that resonate deeply with his audience. Born
-          in the village of Khant Maanpur in Punjab, India, he has become a
-          cultural icon in the Punjabi music industry. <br /> <br /> His songs
-          often reflect the struggles and triumphs of everyday life, capturing
-          the essence of Punjabi culture and traditions. With a career spanning
-          over two decades, Babu Maan has released numerous hit albums and
-          singles that have garnered him a massive fan following both in India
-          and abroad.
-        </p>
-      );
-    },
-  },
-
-  {
-    description: "Metallica",
-    title: "For Whom The Bell Tolls",
-    src: "https://assets.aceternity.com/demos/metallica.jpeg",
-    ctaText: "Play",
-    ctaLink: "https://ui.aceternity.com/templates",
-    content: () => {
-      return (
-        <p>
-          Metallica, an iconic American heavy metal band, is renowned for their
-          powerful sound and intense performances that resonate deeply with
-          their audience. Formed in Los Angeles, California, they have become a
-          cultural icon in the heavy metal music industry. <br /> <br /> Their
-          songs often reflect themes of aggression, social issues, and personal
-          struggles, capturing the essence of the heavy metal genre. With a
-          career spanning over four decades, Metallica has released numerous hit
-          albums and singles that have garnered them a massive fan following
-          both in the United States and abroad.
-        </p>
-      );
-    },
-  },
-  {
-    description: "Led Zeppelin",
-    title: "Stairway To Heaven",
-    src: "https://assets.aceternity.com/demos/led-zeppelin.jpeg",
-    ctaText: "Play",
-    ctaLink: "https://ui.aceternity.com/templates",
-    content: () => {
-      return (
-        <p>
-          Led Zeppelin, a legendary British rock band, is renowned for their
-          innovative sound and profound impact on the music industry. Formed in
-          London in 1968, they have become a cultural icon in the rock music
-          world. <br /> <br /> Their songs often reflect a blend of blues, hard
-          rock, and folk music, capturing the essence of the 1970s rock era.
-          With a career spanning over a decade, Led Zeppelin has released
-          numerous hit albums and singles that have garnered them a massive fan
-          following both in the United Kingdom and abroad.
-        </p>
-      );
-    },
-  },
-  {
-    description: "Mustafa Zahid",
-    title: "Toh Phir Aao",
-    src: "https://assets.aceternity.com/demos/toh-phir-aao.jpeg",
-    ctaText: "Play",
-    ctaLink: "https://ui.aceternity.com/templates",
-    content: () => {
-      return (
-        <p>
-          &quot;Aawarapan&quot;, a Bollywood movie starring Emraan Hashmi, is
-          renowned for its intense storyline and powerful performances. Directed
-          by Mohit Suri, the film has become a significant work in the Indian
-          film industry. <br /> <br /> The movie explores themes of love,
-          redemption, and sacrifice, capturing the essence of human emotions and
-          relationships. With a gripping narrative and memorable music,
-          &quot;Aawarapan&quot; has garnered a massive fan following both in
-          India and abroad, solidifying Emraan Hashmi&apos;s status as a
-          versatile actor.
-        </p>
-      );
-    },
-  },
-];
+export default Dashboard;

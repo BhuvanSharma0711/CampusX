@@ -1,9 +1,9 @@
 import React from 'react'
-import OrderOnline from './orderonline'
+import Profile from './profile'
 
 function page() {
   return (
-    <OrderOnline></OrderOnline>
+    <Profile></Profile>
   )
 }
 

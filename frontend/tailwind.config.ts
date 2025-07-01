@@ -1,5 +1,5 @@
 import type { Config } from "tailwindcss";
-const {heroui} = require("@heroui/theme");
+const {heroui} = require("@heroui/react");
 const {
   default: flattenColorPalette,
 } = require("tailwindcss/lib/util/flattenColorPalette");
@@ -13,6 +13,19 @@ export default {
   ],
   theme: {
     extend: {
+      animation: {
+        shimmer: "shimmer 2s linear infinite",
+      },
+      keyframes: {
+        shimmer: {
+          from: {
+            backgroundPosition: "0 0",
+          },
+          to: {
+            backgroundPosition: "-200% 0",
+          },
+        },
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
@@ -22,7 +35,7 @@ export default {
       },
     },
   },
-  plugins: [heroui,addVariablesForColors],
+  plugins: [heroui()],
 } satisfies Config;
 
 function addVariablesForColors({ addBase, theme }: any) {
