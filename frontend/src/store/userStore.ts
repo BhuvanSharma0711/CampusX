@@ -3,6 +3,7 @@ import { create } from 'zustand'
 interface User {
     username: string;
     email: string;
+    id:string;
   }
 
 interface UserStore {
@@ -12,8 +13,9 @@ interface UserStore {
 
 export const useUserStore = create<UserStore>((set) => ({
     user: {
-        username: "bhuvan",
+        username: "John Doe",
         email: "john@example.com",
+        id: "cmc3rlmzr0000fuzger5gl0p2"
       },
     setUser: (user) => set({ user }),
 }));

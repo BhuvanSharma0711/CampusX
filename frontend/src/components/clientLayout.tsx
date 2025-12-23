@@ -9,7 +9,7 @@ import { useUserStore } from '@/store/userStore';
 function ClientLayout({ children,}: {children: React.ReactNode;}) {
     const pathname = usePathname();
     const { user } = useUserStore();
-    const Layout = pathname?.startsWith(`/${user?.username}`) ? DashboardLayout : PublicLayout;
+    const Layout = pathname?.startsWith(`/${user?.id}`) ? DashboardLayout : PublicLayout;
 
     return <Layout>{children}</Layout>
 }

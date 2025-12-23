@@ -42,9 +42,9 @@ export function Login() {
         return;
       }
       const user = await response.json();
-      const userdata = { username : user.name, email : user.email };
+      const userdata = { username : user.name, email : user.email , id : user.id};
       setUser(userdata);
-      router.push(`/${user.name}/dashboard`);
+      router.push(`/${user.id}/dashboard`);
     } catch(error) {
       console.error("Error registering user:", error);
     }

@@ -1,6 +1,7 @@
 import ClientLayout from "@/components/clientLayout";
 import "./globals.css";
 import {Providers} from "./providers";
+import "mapbox-gl/dist/mapbox-gl.css";
 
 export const metadata = {
   title: "𝒞αмρυѕ✘",

@@ -125,7 +125,7 @@ export function ExpandableCardDemo(props:any) {
           </div>
         ) : null}
       </AnimatePresence>
-      <ul className="max-w-md mx-auto w-full gap-4">
+      <ul className="max-w-md w-full gap-4">
           <motion.div
             layoutId={`card-${props.title}-${id}`}
             key={`props-${props.title}-${id}`}

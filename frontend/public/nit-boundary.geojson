@@ -1,0 +1,23 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "NIT Kurukshetra"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [76.8068, 29.9419],
+            [76.8262, 29.9419],
+            [76.8262, 29.9551],
+            [76.8068, 29.9551],
+            [76.8068, 29.9419]
+          ]
+        ]
+      }
+    }
+  ]
+}

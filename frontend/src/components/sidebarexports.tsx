@@ -12,26 +12,31 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { useUserStore } from '@/store/userStore';
 
-export function SidebarDemo() {
+type SidebarDemoProps = {
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+export function SidebarDemo({ open, setOpen }: SidebarDemoProps) {
   const { user } = useUserStore();
   const links = [
     {
       label: "Dashboard",
-      href: `/${user?.username}/dashboard`,
+      href: `/${user?.id}/dashboard`,
       icon: (
         <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
       label: "Profile",
-      href: `/${user?.username}/profile`,
+      href: `/${user?.id}/profile`,
       icon: (
         <IconUserBolt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
       label: "food Gallery",
-      href: `/${user?.username}/foodgallery`,
+      href: `/${user?.id}/foodgallery`,
       icon: (
         <IconSettings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
@@ -44,9 +49,13 @@ export function SidebarDemo() {
       ),
     },
   ];
-  const [open, setOpen] = useState(false);
+  
   return (
-    <div className="w-1/4 min-h-screen bg-gray-200">
+    <div className={`
+      min-h-screen bg-gray-200
+      transition-all duration-300
+      ${open ? "w-64" : "w-16"}
+    `}>
       <Sidebar open={open} setOpen={setOpen}>
         <SidebarBody className="justify-between gap-10">
           <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
@@ -60,7 +69,7 @@ export function SidebarDemo() {
           <div>
             <SidebarLink
               link={{
-                label: `${user?.username}`,
+                label: `${user?.id}`,
                 href: "#",
                 icon: (
                   <Image
